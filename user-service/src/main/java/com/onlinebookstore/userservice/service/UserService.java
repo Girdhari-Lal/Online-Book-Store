@@ -28,7 +28,6 @@ public class UserService {
         if(!userList.isEmpty()) {
             List<UserDTO> userDTOList = userList.stream().map(user -> {
                 UserDTO userDTO = userMapper.convertToUserDTO(user);
-                userDTO.setPassword(null);
                 return userDTO;
             }).collect(Collectors.toList());
             return userDTOList;
@@ -41,7 +40,6 @@ public class UserService {
         if(optionalUser.isPresent()){
             User user = optionalUser.get();
             UserDTO userDTO = userMapper.convertToUserDTO(user);
-            userDTO.setPassword(null);
             return userDTO;
         }
         throw new RuntimeException("User with username " + username + " not found");
@@ -53,14 +51,26 @@ public class UserService {
         return userMapper.convertToUserDTO(savedUser);
     }
 
-    public UserDTO updateUser(UserDTO userDTO, String username){
+    public UserDTO loginUser(String username, String password){
         Optional<User> optionalUser = userRepository.findById(username);
         if (optionalUser.isPresent()){
-            User previousUser = optionalUser.get();
-            User updatedUser = userMapper.convertToUser(userDTO);
-            userMapper.updateExistingUser(previousUser, updatedUser);
-            User savedUser = userRepository.save(previousUser);
-            return userMapper.convertToUserDTO(savedUser);
+            User user = optionalUser.get();
+            if (password.equals(user.getPassword())){
+                UserDTO userDTO = userMapper.convertToUserDTO(user);
+                return userDTO;
+            }
+            throw new RuntimeException("Invalid Password");
+        }
+        throw new RuntimeException("user not exist!");
+    }
+
+    public UserDTO modifyUser(UserDTO userDTO, String username){
+        Optional<User> optionalUser = userRepository.findById(username);
+        if (optionalUser.isPresent()){
+            User user = optionalUser.get();
+            userMapper.updateExistingUser(user, userDTO);
+            user = userRepository.save(user);
+            return userMapper.convertToUserDTO(user);
         }
         throw new RuntimeException("User with username " + username + " not found");
     }

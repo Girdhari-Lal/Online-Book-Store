@@ -28,12 +28,12 @@ public class UserMapper {
         return user;
     }
 
-    public void updateExistingUser(User previousUser, User updatedUser){
-        previousUser.setUsername(updatedUser.getUsername());
-        previousUser.setFirstName(updatedUser.getFirstName());
-        previousUser.setLastName(updatedUser.getLastName());
-        previousUser.setAddress(updatedUser.getAddress());
-        previousUser.setEmail(updatedUser.getEmail());
-        previousUser.setPhoneNumber(updatedUser.getPhoneNumber());
+    public void updateExistingUser(User user, UserDTO userDTO){
+        user.setUsername(userDTO.getUsername());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setAddress(userDTO.getAddress());
+        user.setEmail(userDTO.getEmail());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
     }
 }

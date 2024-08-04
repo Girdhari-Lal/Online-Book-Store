@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
@@ -35,6 +36,11 @@ public class UserController {
         return userService.findUserByUsername(username);
     }
 
+    @GetMapping("/login")
+    public UserDTO loginUser(@RequestParam String username, @RequestParam String password){
+        return userService.loginUser(username, password);
+    }
+
     @PostMapping("/register")
     public UserDTO saveUser(@Valid @RequestBody UserDTO userDTO){
         return userService.saveUser(userDTO);
@@ -42,7 +48,7 @@ public class UserController {
 
     @PutMapping("/{username}")
     public UserDTO updateUser(@Valid @RequestBody UserDTO userDTO, @PathVariable("username") String username){
-        return userService.updateUser(userDTO, username);
+        return userService.modifyUser(userDTO, username);
     }
 
     @DeleteMapping("/{username}")
