@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
-    public UserDTO UserToUserDTO(User user){
+    public UserDTO convertToUserDTO(User user){
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername(user.getUsername());
         userDTO.setFirstName(user.getFirstName());
@@ -17,7 +17,7 @@ public class UserMapper {
         return userDTO;
     }
 
-    public User UserDTOToUser(UserDTO userDTO){
+    public User convertToUser(UserDTO userDTO){
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setFirstName(userDTO.getFirstName());
@@ -28,12 +28,12 @@ public class UserMapper {
         return user;
     }
 
-    public void updateUser(User previousUser, User user){
-        previousUser.setUsername(user.getUsername());
-        previousUser.setFirstName(user.getFirstName());
-        previousUser.setLastName(user.getLastName());
-        previousUser.setAddress(user.getAddress());
-        previousUser.setEmail(user.getEmail());
-        previousUser.setPhoneNumber(user.getPhoneNumber());
+    public void updateExistingUser(User previousUser, User updatedUser){
+        previousUser.setUsername(updatedUser.getUsername());
+        previousUser.setFirstName(updatedUser.getFirstName());
+        previousUser.setLastName(updatedUser.getLastName());
+        previousUser.setAddress(updatedUser.getAddress());
+        previousUser.setEmail(updatedUser.getEmail());
+        previousUser.setPhoneNumber(updatedUser.getPhoneNumber());
     }
 }

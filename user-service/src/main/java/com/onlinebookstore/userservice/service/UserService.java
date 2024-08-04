@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     public final UserRepository userRepository;
+
     public final UserMapper userMapper;
 
     @Autowired
@@ -26,49 +27,49 @@ public class UserService {
         List<User> userList = userRepository.findAll();
         if(!userList.isEmpty()) {
             List<UserDTO> userDTOList = userList.stream().map(user -> {
-                UserDTO userDTO = userMapper.UserToUserDTO(user);
+                UserDTO userDTO = userMapper.convertToUserDTO(user);
+                userDTO.setPassword(null);
                 return userDTO;
             }).collect(Collectors.toList());
             return userDTOList;
         }
-        return null;
-       // throw new RuntimeException("Not found");
+        throw new RuntimeException("No users found");
     }
 
     public UserDTO findUserByUsername(String username){
-        Optional<User> optionalUser = userRepository.findByUsername(username);
+        Optional<User> optionalUser = userRepository.findById(username);
         if(optionalUser.isPresent()){
             User user = optionalUser.get();
-            UserDTO userDTO = userMapper.UserToUserDTO(user);
+            UserDTO userDTO = userMapper.convertToUserDTO(user);
+            userDTO.setPassword(null);
             return userDTO;
         }
-        throw new RuntimeException("Not found");
+        throw new RuntimeException("User with username " + username + " not found");
     }
 
-    public UserDTO saveUser(User user){
-        User userSaved = userRepository.save(user);
-        UserDTO userDTO = userMapper.UserToUserDTO(userSaved);
-        return userDTO;
+    public UserDTO saveUser(UserDTO userDTO){
+        User user = userMapper.convertToUser(userDTO);
+        User savedUser = userRepository.save(user);
+        return userMapper.convertToUserDTO(savedUser);
     }
 
-    public UserDTO updateUser(User user, String username){
-        Optional<User> optionalUser = userRepository.findByUsername(username);
+    public UserDTO updateUser(UserDTO userDTO, String username){
+        Optional<User> optionalUser = userRepository.findById(username);
         if (optionalUser.isPresent()){
-            User prevoiusUser = optionalUser.get();
-            userMapper.updateUser(prevoiusUser, user);
-            User savedUser = userRepository.save(user);
-            return userMapper.UserToUserDTO(savedUser);
+            User previousUser = optionalUser.get();
+            User updatedUser = userMapper.convertToUser(userDTO);
+            userMapper.updateExistingUser(previousUser, updatedUser);
+            User savedUser = userRepository.save(previousUser);
+            return userMapper.convertToUserDTO(savedUser);
         }
-        throw new RuntimeException("Invalid Input");
-    }
-
-    public  String deleteAllUser(){
-        userRepository.deleteAll();
-        return "Delete all user successfully";
+        throw new RuntimeException("User with username " + username + " not found");
     }
 
     public String deleteUser(String username){
-        userRepository.deleteUser(username);
-        return "Delete user successfully";
+        boolean deleteUser =userRepository.deleteUser(username);
+        if (deleteUser){
+            return "Delete user successfully";
+        }
+        throw new RuntimeException("User with username " + username + " not found");
     }
 }

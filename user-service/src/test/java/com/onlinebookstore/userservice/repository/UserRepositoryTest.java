@@ -20,7 +20,7 @@ class UserRepositoryTest {
 
     @Test
     void findByUsername() {
-        Optional<User> result = userRepository.findByUsername("verma");
+        Optional<User> result = userRepository.findById("verma");
         assertThat(result).isPresent();
         assertThat(result.get()).isNotNull();
         assertThat(result.get().getUsername()).isEqualTo("verma");

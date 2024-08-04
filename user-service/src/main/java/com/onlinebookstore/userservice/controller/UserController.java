@@ -1,7 +1,6 @@
 package com.onlinebookstore.userservice.controller;
 
 import com.onlinebookstore.userservice.dto.UserDTO;
-import com.onlinebookstore.userservice.entity.User;
 import com.onlinebookstore.userservice.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @RestController
@@ -38,18 +36,13 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public UserDTO saveUser(@Valid @RequestBody User user){
-        return userService.saveUser(user);
+    public UserDTO saveUser(@Valid @RequestBody UserDTO userDTO){
+        return userService.saveUser(userDTO);
     }
 
     @PutMapping("/{username}")
-    public UserDTO updateUser(@Valid @RequestBody User user, @PathVariable("username") String username){
-        return userService.updateUser(user, username);
-    }
-
-    @DeleteMapping
-    public String deleteAllUser(){
-        return userService.deleteAllUser();
+    public UserDTO updateUser(@Valid @RequestBody UserDTO userDTO, @PathVariable("username") String username){
+        return userService.updateUser(userDTO, username);
     }
 
     @DeleteMapping("/{username}")

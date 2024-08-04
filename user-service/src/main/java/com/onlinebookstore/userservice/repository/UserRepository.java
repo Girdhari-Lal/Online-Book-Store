@@ -10,11 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
-
-    Optional<User> findByUsername(String username);
-
     @Transactional
     @Modifying
     @Query("DELETE FROM User u WHERE u.username = :username")
-    void deleteUser(String username);
+    boolean deleteUser(String username);
 }
