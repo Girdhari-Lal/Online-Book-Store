@@ -17,8 +17,8 @@ public class UserMapper {
         return userDTO;
     }
 
-    public User convertToUser(UserDTO userDTO){
-        User user = new User();
+    public User convertToUser(User existingUser, UserDTO userDTO){
+        User user = existingUser != null ? existingUser : new User();
         user.setUsername(userDTO.getUsername());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
@@ -28,12 +28,4 @@ public class UserMapper {
         return user;
     }
 
-    public void updateExistingUser(User user, UserDTO userDTO){
-        user.setUsername(userDTO.getUsername());
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setAddress(userDTO.getAddress());
-        user.setEmail(userDTO.getEmail());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-    }
 }

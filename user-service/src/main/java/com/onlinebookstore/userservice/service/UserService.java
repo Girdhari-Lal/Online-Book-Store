@@ -46,7 +46,7 @@ public class UserService {
     }
 
     public UserDTO saveUser(UserDTO userDTO){
-        User user = userMapper.convertToUser(userDTO);
+        User user = userMapper.convertToUser(null ,userDTO);
         User savedUser = userRepository.save(user);
         return userMapper.convertToUserDTO(savedUser);
     }
@@ -67,8 +67,7 @@ public class UserService {
     public UserDTO modifyUser(UserDTO userDTO, String username){
         Optional<User> optionalUser = userRepository.findById(username);
         if (optionalUser.isPresent()){
-            User user = optionalUser.get();
-            userMapper.updateExistingUser(user, userDTO);
+            User user = userMapper.convertToUser(optionalUser.get(), userDTO);
             user = userRepository.save(user);
             return userMapper.convertToUserDTO(user);
         }
