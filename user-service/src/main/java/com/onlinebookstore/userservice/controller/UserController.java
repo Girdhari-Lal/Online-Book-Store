@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public UserDTO loginUser(@RequestParam String username, @RequestParam String password){
+    public UserDTO loginUser(@RequestParam("username") String username, @RequestParam("password") String password){
         return userService.loginUser(username, password);
     }
 
