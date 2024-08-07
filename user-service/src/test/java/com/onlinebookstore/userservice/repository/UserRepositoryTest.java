@@ -26,9 +26,4 @@ class UserRepositoryTest {
         assertThat(result.get().getUsername()).isEqualTo("verma");
     }
 
-    @AfterEach
-    void tearDown(){
-        System.out.println("Delete successfully");
-        userRepository.deleteUser("verma");
-    }
 }

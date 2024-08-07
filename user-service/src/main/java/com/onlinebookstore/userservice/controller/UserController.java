@@ -42,8 +42,8 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public UserDTO saveUser(@Valid @RequestBody UserDTO userDTO){
-        return userService.saveUser(userDTO);
+    public UserDTO createUser(@Valid @RequestBody UserDTO userDTO){
+        return userService.createUser(userDTO);
     }
 
     @PutMapping("/{username}")
@@ -51,8 +51,8 @@ public class UserController {
         return userService.modifyUser(userDTO, username);
     }
 
-    @DeleteMapping("/{username}")
-    public String deleteUser(@PathVariable("username") String username){
-        return userService.deleteUser(username);
+    @DeleteMapping
+    public String deactivateUser(@RequestParam("username") String username, @RequestParam("password") String password){
+        return userService.deactivateUser(username, password);
     }
 }

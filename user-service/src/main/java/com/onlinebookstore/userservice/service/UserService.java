@@ -24,10 +24,11 @@ public class UserService {
     }
 
     public List<UserDTO> listUsers(){
-        List<User> userList = userRepository.findAll();
+        List<User> userList = userRepository.findByActiveTrue();
         if(!userList.isEmpty()) {
             List<UserDTO> userDTOList = userList.stream().map(user -> {
                 UserDTO userDTO = userMapper.convertToUserDTO(user);
+                userDTO.setPassword(null);
                 return userDTO;
             }).collect(Collectors.toList());
             return userDTOList;
@@ -36,23 +37,25 @@ public class UserService {
     }
 
     public UserDTO findUserByUsername(String username){
-        Optional<User> optionalUser = userRepository.findById(username);
+        Optional<User> optionalUser = userRepository.findByUsernameAndActiveTrue(username);
         if(optionalUser.isPresent()){
             User user = optionalUser.get();
             UserDTO userDTO = userMapper.convertToUserDTO(user);
+            userDTO.setPassword(null);
             return userDTO;
         }
         throw new RuntimeException("User with username " + username + " not found");
     }
 
-    public UserDTO saveUser(UserDTO userDTO){
+    public UserDTO createUser(UserDTO userDTO){
         User user = userMapper.convertToUser(null ,userDTO);
+        user.setActive(true);
         User savedUser = userRepository.save(user);
         return userMapper.convertToUserDTO(savedUser);
     }
 
     public UserDTO loginUser(String username, String password){
-        Optional<User> optionalUser = userRepository.findById(username);
+        Optional<User> optionalUser = userRepository.findByUsernameAndActiveTrue(username);
         if (optionalUser.isPresent()){
             User user = optionalUser.get();
             if (password.equals(user.getPassword())){
@@ -65,7 +68,7 @@ public class UserService {
     }
 
     public UserDTO modifyUser(UserDTO userDTO, String username){
-        Optional<User> optionalUser = userRepository.findById(username);
+        Optional<User> optionalUser = userRepository.findByUsernameAndActiveTrue(username);
         if (optionalUser.isPresent()){
             User user = userMapper.convertToUser(optionalUser.get(), userDTO);
             user = userRepository.save(user);
@@ -74,11 +77,19 @@ public class UserService {
         throw new RuntimeException("User with username " + username + " not found");
     }
 
-    public String deleteUser(String username){
-        boolean deleteUser =userRepository.deleteUser(username);
-        if (deleteUser){
-            return "Delete user successfully";
+    public String deactivateUser(String username, String password){
+        Optional<User> optionalUser = userRepository.findById(username);
+        if (optionalUser.isPresent()){
+            User user = optionalUser.get();
+            if (password.equals(user.getPassword())){
+                int deactivatedUser = userRepository.deactivateUser(username, password);
+                if(deactivatedUser > 0) {
+                    return "User deactivated successfully.";
+                }
+                throw new RuntimeException("User is already deactivated");
+            }
+            throw new RuntimeException("Invalid Password");
         }
-        throw new RuntimeException("User with username " + username + " not found");
+        throw new RuntimeException("user not exist!");
     }
 }
