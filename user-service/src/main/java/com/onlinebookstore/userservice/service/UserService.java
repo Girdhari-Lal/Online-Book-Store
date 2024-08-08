@@ -7,7 +7,6 @@ import com.onlinebookstore.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +20,17 @@ public class UserService {
     public UserService(UserRepository userRepository, UserMapper userMapper){
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+    }
+
+    private User validateUserLogin(String username, String password){
+        User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not exist!"));
+        if (!password.equals(user.getPassword())) {
+            throw new RuntimeException("Invalid Password");
+        }
+        if (!user.isActive()) {
+            throw new RuntimeException("User account is deactivated");
+        }
+        return user;
     }
 
     public List<UserDTO> listUsers(){
@@ -61,18 +71,4 @@ public class UserService {
         return "User deactivated successfully.";
     }
 
-    private User validateUserLogin(String username, String password){
-        Optional<User> optionalUser = userRepository.findById(username);
-        if (optionalUser.isPresent()){
-            User user = optionalUser.get();
-            if (password.equals(user.getPassword())){
-                if(user.isActive()){
-                    return user;
-                }
-                throw new RuntimeException("User account is already deactivated");
-            }
-            throw new RuntimeException("Invalid Password");
-        }
-        throw new RuntimeException("user not exist!");
-    }
 }
