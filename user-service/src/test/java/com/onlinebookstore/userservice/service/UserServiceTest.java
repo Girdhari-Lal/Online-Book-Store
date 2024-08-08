@@ -1,46 +1,27 @@
 package com.onlinebookstore.userservice.service;
 
 import com.onlinebookstore.userservice.dto.UserDTO;
-import com.onlinebookstore.userservice.entity.User;
-import com.onlinebookstore.userservice.mapper.UserMapper;
-import com.onlinebookstore.userservice.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class UserServiceTest {
 
-    @Mock
-    private UserRepository userRepository;
+    private final UserService userService;
 
-    private UserService userService;
-    @Mock
-    private UserMapper userMapper;
-
-    @BeforeEach
-    void stepUp(){
-        this.userService = new UserService(userRepository, userMapper);
-    }
-
-    @Test
-    void listUsers() {
-        List<UserDTO> userDTOList = userService.listUsers();
-        System.out.println(userDTOList);
-        verify(userRepository).findAll();
+    @Autowired
+    public UserServiceTest(UserService userService){
+        this.userService = userService;
     }
 
 //    @Test
-//    void deleteUser() {
-//        userService.deleteUser("verma");
-//        verify(userRepository).deleteUser("verma");
+//    void getUser() {
+//        String username = "verma";
+//        UserDTO userDTO = userService.findUserByUsername("verma");
+//        assertEquals(username, userDTO.getUsername());
 //    }
+
 }

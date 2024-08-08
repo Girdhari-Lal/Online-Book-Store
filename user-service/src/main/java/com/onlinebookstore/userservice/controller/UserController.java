@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,14 +30,9 @@ public class UserController {
         return userService.listUsers();
     }
 
-    @GetMapping("/{username}")
-    public UserDTO findUserByUsername(@PathVariable("username") String username){
-        return userService.findUserByUsername(username);
-    }
-
     @GetMapping("/login")
-    public UserDTO loginUser(@RequestParam("username") String username, @RequestParam("password") String password){
-        return userService.loginUser(username, password);
+    public UserDTO getUser(@RequestParam("username") String username, @RequestParam("password") String password){
+        return userService.getUser(username, password);
     }
 
     @PostMapping("/register")
@@ -46,9 +40,9 @@ public class UserController {
         return userService.createUser(userDTO);
     }
 
-    @PutMapping("/{username}")
-    public UserDTO updateUser(@Valid @RequestBody UserDTO userDTO, @PathVariable("username") String username){
-        return userService.modifyUser(userDTO, username);
+    @PutMapping
+    public UserDTO updateUser(@Valid @RequestBody UserDTO userDTO, @RequestParam("username") String username, @RequestParam("password") String password){
+        return userService.modifyUser(userDTO, username, password);
     }
 
     @DeleteMapping
