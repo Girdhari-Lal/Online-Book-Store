@@ -55,8 +55,9 @@ public class UserService {
     }
 
     public String deactivateUser(String username, String password){
-        validateUserLogin(username, password);
-        userRepository.deactivateUser(username, password);
+        User user = validateUserLogin(username, password);
+        user.setActive(false);
+        userRepository.save(user);
         return "User deactivated successfully.";
     }
 

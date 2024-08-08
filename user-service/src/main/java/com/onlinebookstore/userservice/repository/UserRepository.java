@@ -12,10 +12,5 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE User u set u.active = false where u.username = :username and u.password = :password")
-    void deactivateUser(@Param("username") String username, @Param("password") String password);
-
     List<User> findByActiveTrue();
 }
