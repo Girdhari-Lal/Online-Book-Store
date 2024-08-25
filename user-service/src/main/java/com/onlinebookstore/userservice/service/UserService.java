@@ -2,6 +2,7 @@ package com.onlinebookstore.userservice.service;
 
 import com.onlinebookstore.userservice.dto.UserDTO;
 import com.onlinebookstore.userservice.entity.User;
+import com.onlinebookstore.userservice.exception.UserServiceException;
 import com.onlinebookstore.userservice.mapper.UserMapper;
 import com.onlinebookstore.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,26 +24,25 @@ public class UserService {
     }
 
     private User validateUserLogin(String username, String password){
-        User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not exist!"));
+        User user = userRepository.findById(username).orElseThrow(() -> new UserServiceException("User does not exist!"));
         if (!password.equals(user.getPassword())) {
-            throw new RuntimeException("Invalid Password");
+            throw new UserServiceException("Invalid Password");
         }
         if (!user.isActive()) {
-            throw new RuntimeException("User account is deactivated");
+            throw new UserServiceException("User account is deactivated");
         }
         return user;
     }
 
     public List<UserDTO> listUsers(){
         List<User> userList = userRepository.findByActiveTrue();
-        if(!userList.isEmpty()) {
-            List<UserDTO> userDTOList = userList.stream().map(user -> {
-                UserDTO userDTO = userMapper.convertToUserDTO(user);
-                return userDTO;
-            }).collect(Collectors.toList());
-            return userDTOList;
+        if(userList.isEmpty()) {
+            throw new UserServiceException("No users found");
         }
-        throw new RuntimeException("No users found");
+        return userList.stream().map(user -> {
+            UserDTO userDTO = userMapper.convertToUserDTO(user);
+            return userDTO;
+        }).collect(Collectors.toList());
     }
 
     public UserDTO createUser(UserDTO userDTO){
@@ -70,5 +70,4 @@ public class UserService {
         userRepository.save(user);
         return "User deactivated successfully.";
     }
-
 }

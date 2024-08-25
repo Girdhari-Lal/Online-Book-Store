@@ -11,7 +11,7 @@ import java.util.Map;
 
 @ControllerAdvice
 public class UserExceptionHandler {
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(UserServiceException.class)
     public ResponseEntity<ErrorDetails> resourceNotFoundExceptionHandler(RuntimeException exception, WebRequest request){
         ErrorDetails details = new ErrorDetails(exception.getMessage(), request.getDescription(false));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(details);
